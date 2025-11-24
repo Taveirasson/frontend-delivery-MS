@@ -114,7 +114,7 @@ export const MockOrderService = {
     create: (data: Omit<Order, "id" | "createdAt" | "status">): Promise<Order> => {
       const newOrder: Order = {
         ...data,
-        id: `o${mockOrders.length + 1}`,
+        id: `${mockOrders.length + 1}`,
         status: "pending",
         createdAt: new Date().toISOString()
       };
