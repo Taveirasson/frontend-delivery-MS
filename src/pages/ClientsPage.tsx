@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 // import { ClientService } from "../services/clientService";
 import Table from "../components/Table";
 import Form from "../components/Form";
-import { MockClientService } from "../services/mockService";
 import type { Client } from "../types";
+import { ClientService } from "../services/clientService";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [editing, setEditing] = useState<Client | null>(null);
 
-  const fetchClients = () => MockClientService.findAll().then(res => setClients(res));
+  const fetchClients = () => ClientService.findAll().then(res => setClients(res.data)).catch(err => {
+    setClients([]);
+    // console.error(err);
+  }); 
 
   useEffect(() => {
     fetchClients();
@@ -17,14 +20,12 @@ export default function ClientsPage() {
 
   const handleSubmit = (client: Client) => {
     if (editing?.id) {
-      MockClientService.updateById(editing.id, client).then(() => {
-        setClients(prev => prev.map(c => c.id === editing.id ? { ...c, ...client } : c));
+      ClientService.updateById(editing.id, client).then(() => {
         fetchClients();
         setEditing(null);
       });
     } else {
-      MockClientService.create(client).then((newClient) => {
-        setClients(prev => [...prev, newClient]); 
+      ClientService.create(client).then(() => {
         fetchClients();
         setEditing(null);  
       });
@@ -33,11 +34,9 @@ export default function ClientsPage() {
 
   const handleDelete = (id: string) => {
     if (confirm("Deseja realmente deletar?")) {
-      MockClientService.deleteById(id).then((success) => {
-        if (success ){
-          setClients(clients.filter(c => c.id !== id));
-          fetchClients();
-        }
+      ClientService.delete(id).then(() => {
+        fetchClients();
+        setEditing(null);  
       });
     }
   };
