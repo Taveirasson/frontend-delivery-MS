@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-// import { ProductService } from "../services/productService";
 import Table from "../components/Table";
 import Form from "../components/Form";
 import type { Product } from "../types";
-import { MockProductService } from "../services/mockService";
+import { ProductService } from "../services/productService";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -13,20 +12,21 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  const fetchProducts = () => MockProductService.findAll().then(res => setProducts(res));
+  const fetchProducts = () => ProductService.findAll().then(res => setProducts(res.data)).catch(err => {
+    setProducts([]);
+    console.log(err);
+  });
 
   const handleSubmit = (product: Product) => {
     if (editing?.id) {
-      MockProductService.update(editing.id, product).then((updated) => {
+      ProductService.update(editing.id, product).then((updated) => {
         if(updated) {
-          setProducts(prev => prev.map(p => p.id === editing.id ? updated : p));
           fetchProducts(); 
           setEditing(null);
         }
       });
     } else {
-      MockProductService.create(product).then((newProduct) => {
-        setProducts(prev => [...prev, newProduct]);
+      ProductService.create(product).then(() => {
         fetchProducts()
       });
     }
@@ -34,11 +34,8 @@ export default function ProductsPage() {
 
   const handleDelete = (id: string) => {
     if (confirm("Deseja realmente deletar?")) {
-      MockProductService.deleteById(id).then((success) => {
-        if(success){
-          setProducts(products.filter(p => p.id !== id));
-          fetchProducts()
-        } 
+      ProductService.delete(id).then(() => {
+        fetchProducts()
       });
     }
   };

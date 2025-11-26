@@ -4,6 +4,7 @@ import Table from "../components/Table";
 import Form from "../components/Form";
 import type { Order, Product } from "../types";
 import { MockOrderService } from "../services/mockService";
+import { OrderService } from "../services/orderService";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -12,7 +13,10 @@ export default function OrdersPage() {
 
 
   const fetchOrders = () => {
-    MockOrderService.findAll().then(res => setOrders(res));
+    OrderService.findAll().then(res => setOrders(res.data)).catch(err => {
+      setOrders([]);
+      console.log(err);
+    });
   };
 
   useEffect(() => { fetchOrders(); }, []);

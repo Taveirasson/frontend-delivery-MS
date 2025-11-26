@@ -11,7 +11,7 @@ export default function ClientsPage() {
 
   const fetchClients = () => ClientService.findAll().then(res => setClients(res.data)).catch(err => {
     setClients([]);
-    // console.error(err);
+    console.log(err);
   }); 
 
   useEffect(() => {
