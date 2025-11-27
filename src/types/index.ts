@@ -15,6 +15,8 @@ export type Client = {
     id?: string;
     clientEmail: string;
     products: Product[];
-    status?: "pending" | "shipped" | "delivered" | "canceled";
+    status?: statusType;
     createdAt?: string;
   };
+
+  export type statusType = "pending" | "shipped" | "delivered" | "canceled";

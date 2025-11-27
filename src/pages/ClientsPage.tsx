@@ -55,7 +55,7 @@ export default function ClientsPage() {
 
       <Table
         data={clients}
-        columns={[{ key: "name", label: "Nome" }, { key: "email", label: "Email" }]}
+        columns={[{key: "id", label:"Id"}, { key: "name", label: "Nome" }, { key: "email", label: "Email" }]}
         actions={(item) => (
           <div className="flex gap-2">
             <button className="bg-yellow-500 px-2 rounded" onClick={() => setEditing(item)}>Editar</button>

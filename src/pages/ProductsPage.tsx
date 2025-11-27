@@ -54,7 +54,7 @@ export default function ProductsPage() {
 
       <Table
         data={products}
-        columns={[{ key: "name", label: "Nome" }, { key: "quantity", label: "Quantidade" }]}
+        columns={[{key: "id", label: "Id"},{ key: "name", label: "Nome" }, { key: "quantity", label: "Quantidade" }]}
         actions={(item) => (
           <div className="flex gap-2">
             <button className="bg-yellow-500 px-2 rounded" onClick={() => setEditing(item)}>Editar</button>
