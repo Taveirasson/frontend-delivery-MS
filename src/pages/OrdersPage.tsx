@@ -45,16 +45,31 @@ export default function OrdersPage() {
 
   const handleSubmit = (order: Order) => {
     if (editing?.id) {
-      const payload = {
-        clientEmail: order.clientEmail,
-        products: order.products,
-        // status: order.status ?? "pending",
-      };
+    const mapStatusToBackend: Record<string, string> = {
+      pending: "PENDENTE",
+      shipped: "ENVIADO",
+      delivered: "ENTREGUE",
+      canceled: "CANCELADO",
+    };
 
-      OrderService.update(editing.id, payload).then(() => {
+    const payload = {
+      clientEmail: order.clientEmail,
+      products: order.products.map(p => ({
+        id: p.id,
+        name: p.name,
+        quantity: p.quantity,
+      })),
+      status: mapStatusToBackend[order.status ?? "pending"],
+    };
+
+    console.log("Payload de update:", payload);
+
+    OrderService.update(editing.id, payload)
+      .then(() => {
         fetchOrders();
         setEditing(null);
-      }).catch(err => console.log(err));
+      })
+      .catch(err => console.log("ERRO DO BACKEND:", err.response?.data));
     } else {
       const payload = {
         clientEmail: order.clientEmail,
@@ -132,12 +147,12 @@ export default function OrdersPage() {
         ]}
         actions={(item) => (
           <div className="flex gap-2">
-            {/* <button
+            <button
               className="bg-yellow-500 px-2 rounded"
               onClick={() => setEditing(item)}
             >
               Editar
-            </button> */}
+            </button>
             <button
               className="bg-yellow-400 px-2 rounded"
               onClick={() => setDetails(item)}
